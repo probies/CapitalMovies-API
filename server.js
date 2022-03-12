@@ -28,9 +28,9 @@ if(process.env.NODE_ENV === 'development'){
     app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
 
-app.get('/' , (req,res) => {
-    res.send('Welcome to CapitalMovies API')
-})
+const authRoutes = require('./routes/auth');
+app.use('/api', authRoutes);
+
 
 //port
 const port = process.env.PORT || 8000;
