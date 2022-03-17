@@ -29,7 +29,9 @@ if(process.env.NODE_ENV === 'development'){
 }
 
 const authRoutes = require('./routes/auth');
+const moviesRoutes = require('./routes/movies')
 app.use('/api', authRoutes);
+app.use('/api', moviesRoutes);
 
 
 //port
