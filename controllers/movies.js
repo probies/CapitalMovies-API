@@ -1,5 +1,6 @@
 const axios = require('axios');
 const date = require('../helpers/date');
+const Movie = require('../models/movie');
 
 exports.movies = (req, res) => {
     axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_key}&language=en-US&page=1`)
@@ -26,3 +27,47 @@ exports.latestmovies = (req, res) => {
         .json(response.data)
     )
 };
+
+exports.postfavourites = (req, res) => {
+    console.log(req.body);
+    const { backdrop_path, id, original_language, original_title, overview, popularity, poster_path, release_date, title, vote_average, vote_count  } = req.body;
+
+    const movie = new Movie({
+        backdrop_path,
+        id,
+        original_language,
+        original_title,
+        overview,
+        popularity,
+        poster_path,
+        release_date,
+        title,
+        vote_average,
+        vote_count,
+        postedBy: req.user._id
+    });
+
+    movie.save((err, data) => {
+        if (err) {
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
+        }
+        res.json(data);
+    }
+    );
+};
+
+exports.favourites = (req, res) => {
+    Movie.find({ postedBy: req.user._id })
+    .populate('postedBy', '_id name')
+    .exec((err, data) => {
+        if (err) {
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
+        }
+        res.json(data);
+    });
+};
+
