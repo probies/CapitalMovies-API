@@ -29,7 +29,7 @@ exports.latestmovies = (req, res) => {
 };
 
 exports.postfavourites = (req, res) => {
-    console.log(req.body);
+    
     const { backdrop_path, id, original_language, original_title, overview, popularity, poster_path, release_date, title, vote_average, vote_count  } = req.body;
 
     const movie = new Movie({
@@ -47,16 +47,28 @@ exports.postfavourites = (req, res) => {
         postedBy: req.user._id
     });
 
-    movie.save((err, data) => {
-        if (err) {
-            return res.status(400).json({
-                error: errorHandler(err)
+    //check movie already present in database
+    Movie.find({ id: id }, (err, data) => {
+        if (data.length > 0) {
+            return res.status(422).json({
+                message: 'Movie already added in favourites'
+
             });
+        } 
+        else {
+            movie.save((err, data) => {
+                if (err) {
+                    return res.status(400).json({
+                        error: errorHandler(err)
+                    });
+                }
+                res.json(data);
+            }
+            );  
         }
-        res.json(data);
-    }
-    );
+    });
 };
+
 
 exports.favourites = (req, res) => {
     Movie.find({ postedBy: req.user._id })
