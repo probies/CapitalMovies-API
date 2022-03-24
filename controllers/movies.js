@@ -48,7 +48,7 @@ exports.postfavourites = (req, res) => {
     });
 
     //check movie already present in database
-    Movie.find({ id: id }, (err, data) => {
+    Movie.find({ id: id, postedBy: req.user._id }, (err, data) => {
         if (data.length > 0) {
             return res.status(422).json({
                 message: 'Movie already added in favourites'
