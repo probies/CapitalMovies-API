@@ -1,5 +1,5 @@
 const express = require('express');
-const morgan = require('morgan');
+//const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 //const cookieParser = require('cookie-parser');
@@ -10,7 +10,7 @@ require('dotenv').config();
 const app = express();
 
 //middlewares
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use(bodyParser.json());
 //app.use(cookieParser());
 
