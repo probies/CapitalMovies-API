@@ -73,6 +73,7 @@ exports.postfavourites = (req, res) => {
 exports.favourites = (req, res) => {
     Movie.find({ postedBy: req.user._id })
     .populate('postedBy', '_id name')
+    .sort({ createdAt: -1 })
     .exec((err, data) => {
         if (err) {
             return res.status(400).json({
@@ -82,4 +83,20 @@ exports.favourites = (req, res) => {
         res.json(data);
     });
 };
+
+exports.search = (req, res) => {
+    const { query } = req.query;
+    axios.get(`https://api.themoviedb.org/3/search/movie`,{
+        params: {
+            'api_key': process.env.API_key,
+            'language': 'en-US',
+            'include_adult': false,
+            'query': query
+    }})
+    .then( response => 
+        res
+        .status(200)
+        .json(response.data)
+    )
+}
 
